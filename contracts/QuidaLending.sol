@@ -3,8 +3,10 @@ pragma solidity ^0.8.7;
 
 import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
+import "@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "./IWitnetPriceFeed.sol";    
+// import "hardhat/console.sol";
 
 error TransferFailed();
 error TokenNotAllowed(address token);
@@ -161,7 +163,7 @@ contract QuidaLending is ReentrancyGuard, Ownable {
         int256 _lastPrice;
         PriceFeed = IWitnetPriceFeed(pair);
         _lastPrice = PriceFeed.lastPrice();
-        return (uint256(_lastPrice) * amount) / 1e24;
+        return (uint256(_lastPrice) * amount) / 1e18;
     }
 
     function getTokenValueFromUSD(address token, uint256 amountinusd) public view returns (uint256) {
@@ -215,5 +217,11 @@ contract QuidaLending is ReentrancyGuard, Ownable {
         PriceFeedAddress[token] = priceFeed;
         emit AllowedTokenSet(token, priceFeed);
     }
+
+    /********************/
+    /* Getter Functions */
+    /********************/
+    // Ideally, we'd have getter functions for all our s_ variables we want exposed, and set them all to private.
+    // But, for the purpose of this demo, we've left them public for simplicity.
    
 }
